@@ -1,0 +1,17 @@
+flowchart LR
+  Browser["Visitor browser\nNext.js landing page"]
+  Chat["AI concierge widget"]
+  Booking["Booking modal"]
+  ChatRoute["POST /api/chat\nvalidation + prompt guardrails"]
+  BookingRoute["POST /api/bookings\nvalidation"]
+  OpenAI["OpenAI API"]
+  Fallback["Listing-guided fallback\nlocal project knowledge"]
+  Supabase[("Supabase\nbookings table")]
+
+  Browser --> Chat
+  Browser --> Booking
+  Chat --> ChatRoute
+  Booking --> BookingRoute
+  ChatRoute --> OpenAI
+  ChatRoute -. missing key / API failure .-> Fallback
+  BookingRoute --> Supabase
