@@ -1,17 +1,26 @@
 flowchart LR
   Browser["Visitor browser\nNext.js landing page"]
+  Admin["Administrator browser\n/admin"]
   Chat["AI concierge widget"]
   Booking["Booking modal"]
   ChatRoute["POST /api/chat\nvalidation + prompt guardrails"]
   BookingRoute["POST /api/bookings\nvalidation"]
+  AdminSession["POST /api/admin/session\nHttpOnly session cookie"]
+  AdminRoute["GET /api/admin/bookings\nauthentication + authorisation"]
   OpenAI["OpenAI API"]
   Fallback["Listing-guided fallback\nlocal project knowledge"]
-  Supabase[("Supabase\nbookings table")]
+  SupabaseAuth["Supabase Auth"]
+  Supabase[("Supabase\nRLS-protected bookings")]
 
   Browser --> Chat
   Browser --> Booking
+  Admin --> AdminSession
+  Admin --> AdminRoute
   Chat --> ChatRoute
   Booking --> BookingRoute
   ChatRoute --> OpenAI
   ChatRoute -. missing key / API failure .-> Fallback
   BookingRoute --> Supabase
+  AdminSession --> SupabaseAuth
+  AdminRoute --> SupabaseAuth
+  AdminRoute --> Supabase

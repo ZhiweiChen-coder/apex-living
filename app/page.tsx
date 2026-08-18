@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowDownRight, ArrowRight, ArrowUpRight, ChevronDown, MapPin, MoveUpRight, Sparkles } from "lucide-react";
 import { BookingDialog } from "@/components/booking-dialog";
 import { ChatWidget } from "@/components/chat-widget";
+import { CookieConsent } from "@/components/cookie-consent";
 import { project } from "@/lib/project";
 
 const reveal = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } };
@@ -38,6 +39,7 @@ export default function Home() {
 
       <footer><a className="wordmark" href="#top">APEX <em>LIVING</em></a><p>© 2026 Apex Living. Demonstration property concept only.</p><p>Made for a considered arrival.</p></footer>
       <ChatWidget />
+      <CookieConsent />
     </main>
   );
 }

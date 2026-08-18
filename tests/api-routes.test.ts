@@ -31,7 +31,7 @@ describe("POST /api/bookings", () => {
   it("reports an unconfigured persistence service", async () => {
     delete process.env.NEXT_PUBLIC_SUPABASE_URL;
     delete process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-    const response = await booking(new Request("http://localhost/api/bookings", { method: "POST", body: JSON.stringify({ name: "Alex Smith", email: "alex@example.com", phone: "+61 412 345 678", viewingDate: "Thursday, 21 August", viewingSlot: "10:00 am" }) }));
+    const response = await booking(new Request("http://localhost/api/bookings", { method: "POST", body: JSON.stringify({ name: "Alex Smith", email: "alex@example.com", phone: "+61 412 345 678", viewingDate: "Thursday, 21 August", viewingSlot: "10:00 am", privacyConsent: true }) }));
     expect(response.status).toBe(500);
   });
 });

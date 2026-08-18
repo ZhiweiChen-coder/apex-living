@@ -79,6 +79,7 @@ export function ChatWidget() {
               <input aria-label="Ask the property concierge" value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Ask a question…" maxLength={1000} />
               <button type="submit" aria-label="Send question" disabled={!draft.trim() || isSending}><ArrowUp size={17} /></button>
             </form>
+            <p className="chat-privacy">Please do not share contact, financial, or other sensitive personal details here.</p>
           </motion.section>
         )}
       </AnimatePresence>

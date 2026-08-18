@@ -5,10 +5,11 @@ import { ArrowRight, Check, LoaderCircle } from "lucide-react";
 import { FormEvent, type ChangeEvent, type ReactNode, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { project } from "@/lib/project";
+import { Turnstile } from "@/components/turnstile";
 
 type BookingState = "idle" | "sending" | "success";
-type FormValues = { name: string; email: string; phone: string; viewingDate: string; viewingSlot: string; notes: string };
-const initialValues: FormValues = { name: "", email: "", phone: "", viewingDate: "", viewingSlot: "", notes: "" };
+type FormValues = { name: string; email: string; phone: string; viewingDate: string; viewingSlot: string; notes: string; privacyConsent: boolean; website: string; turnstileToken: string };
+const initialValues: FormValues = { name: "", email: "", phone: "", viewingDate: "", viewingSlot: "", notes: "", privacyConsent: false, website: "", turnstileToken: "" };
 
 export function BookingDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -43,7 +44,7 @@ export function BookingDialog({ children }: { children: ReactNode }) {
     }
   }
 
-  const update = (field: keyof FormValues) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setValues((current) => ({ ...current, [field]: event.target.value }));
+  const update = (field: Exclude<keyof FormValues, "privacyConsent" | "turnstileToken">) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setValues((current) => ({ ...current, [field]: event.target.value }));
 
   return (
     <Dialog open={open} onOpenChange={close}>
@@ -64,6 +65,7 @@ export function BookingDialog({ children }: { children: ReactNode }) {
               <h2>Meet The Aster House.</h2>
               <p id="booking-description">Select a time to visit our Potts Point presentation suite.</p>
               <div className="form-grid">
+                <label className="honeypot" aria-hidden="true">Website<input value={values.website} onChange={update("website")} tabIndex={-1} autoComplete="off" /></label>
                 <label>Full name<input value={values.name} onChange={update("name")} autoComplete="name" />{fieldErrors.name && <small>{fieldErrors.name[0]}</small>}</label>
                 <label>Email address<input type="email" value={values.email} onChange={update("email")} autoComplete="email" />{fieldErrors.email && <small>{fieldErrors.email[0]}</small>}</label>
                 <label>Mobile number<input type="tel" value={values.phone} onChange={update("phone")} autoComplete="tel" />{fieldErrors.phone && <small>{fieldErrors.phone[0]}</small>}</label>
@@ -71,6 +73,9 @@ export function BookingDialog({ children }: { children: ReactNode }) {
                 <label>Preferred time<select value={values.viewingSlot} onChange={update("viewingSlot")}><option value="">Select a time</option>{project.viewingSlots.map((slot) => <option key={slot}>{slot}</option>)}</select>{fieldErrors.viewingSlot && <small>{fieldErrors.viewingSlot[0]}</small>}</label>
                 <label className="full-width">Anything we should prepare?<textarea rows={3} value={values.notes} onChange={update("notes")} placeholder="Bedrooms, accessibility requirements, or questions…" /></label>
               </div>
+              <label className="consent-field"><input type="checkbox" checked={values.privacyConsent} onChange={(event) => setValues((current) => ({ ...current, privacyConsent: event.target.checked }))} /> <span>I agree that Apex Living may use these details solely to arrange this private viewing. My details will not be included in AI conversations.</span></label>
+              <Turnstile onToken={(turnstileToken) => setValues((current) => ({ ...current, turnstileToken }))} />
+              {fieldErrors.privacyConsent && <p className="form-error">{fieldErrors.privacyConsent[0]}</p>}
               {error && <p className="form-error">{error}</p>}
               <button className="button button-dark submit-button" type="submit" disabled={status === "sending"}>{status === "sending" ? <><LoaderCircle className="spin" size={17} /> Reserving your time</> : <>Request private viewing <ArrowRight size={17} /></>}</button>
             </motion.form>
