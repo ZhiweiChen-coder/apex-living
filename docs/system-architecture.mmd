@@ -19,7 +19,7 @@ flowchart LR
   Chat --> ChatRoute
   Booking --> BookingRoute
   ChatRoute --> OpenAI
-  ChatRoute -. missing key / API failure .-> Fallback
+  ChatRoute -.->|Missing key or API failure| Fallback
   BookingRoute --> Supabase
   AdminSession --> SupabaseAuth
   AdminRoute --> SupabaseAuth
