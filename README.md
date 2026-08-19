@@ -79,7 +79,7 @@ npm run dev
 | 变量 | 必需 | 用途 |
 | --- | --- | --- |
 | `OPENAI_API_KEY` | 否 | 启用真实 OpenAI 顾问。 |
-| `OPENAI_MODEL` | 否 | 默认 `gpt-4.1-mini`。 |
+| `OPENAI_MODEL` | 否 | 默认 `gpt-5.6-luna`。 |
 | `NEXT_PUBLIC_SUPABASE_URL` | 预约必需 | Supabase 项目 URL。 |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 预约必需 | 仅配合 RLS 使用的 publishable key。 |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | 推荐 | Cloudflare Turnstile 公钥。 |
