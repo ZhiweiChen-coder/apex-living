@@ -79,7 +79,7 @@ The visual site and AI fallback work without environment variables. Booking pers
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `OPENAI_API_KEY` | No | Enables the live OpenAI concierge. |
-| `OPENAI_MODEL` | No | Defaults to `gpt-4.1-mini`. |
+| `OPENAI_MODEL` | No | Defaults to `gpt-5.6-luna`. |
 | `NEXT_PUBLIC_SUPABASE_URL` | For bookings | Supabase project URL. |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | For bookings | Publishable key used under RLS. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Recommended | Cloudflare Turnstile site key. |
