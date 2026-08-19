@@ -34,14 +34,15 @@ export async function POST(request: Request) {
 
   try {
     const client = new OpenAI({ apiKey });
+    const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
     const completion = await client.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
-      temperature: 0.35,
-      max_tokens: 280,
+      model,
+      ...(model.toLowerCase().startsWith("gpt-5") ? {} : { temperature: 0.35 }),
+      max_completion_tokens: 280,
       messages: [
         {
           role: "system",
-          content: `You are the poised, concise property adviser for ${project.name}. Answer only using the supplied listing facts. Do not invent availability, legal advice, school catchments, financing, investment returns, or local facts. For information not in the listing, say you can arrange a discussion with the sales team. Mention that investment comments are general information, not financial advice.\n\nLISTING FACTS:\n${knowledgeContext}`,
+          content: `You are the poised, concise property adviser for ${project.name}. Answer only using the supplied listing facts. Do not invent availability, legal advice, school catchments, financing, rental yields, vacancy rates, investment returns, or local facts. When asked about renting versus self-living, compare the known owner-occupier and long-term-investor positioning, then clearly say which rental metrics are not available. For information not in the listing, say you can arrange a discussion with the sales team. Mention that investment comments are general information, not financial advice.\n\nLISTING FACTS:\n${knowledgeContext}`,
         },
         ...safeMessages,
       ],
@@ -51,7 +52,15 @@ export async function POST(request: Request) {
 
     return Response.json({ message, source: "llm" });
   } catch (error) {
-    console.error("AI service unavailable", error instanceof Error ? error.name : "unknown error");
+    const details = error && typeof error === "object" ? error as { name?: unknown; status?: unknown; code?: unknown; type?: unknown; param?: unknown; request_id?: unknown } : {};
+    console.error("AI service unavailable", {
+      name: typeof details.name === "string" ? details.name : "unknown",
+      status: typeof details.status === "number" ? details.status : undefined,
+      code: typeof details.code === "string" ? details.code : undefined,
+      type: typeof details.type === "string" ? details.type : undefined,
+      param: typeof details.param === "string" ? details.param : undefined,
+      requestId: typeof details.request_id === "string" ? details.request_id : undefined,
+    });
     return Response.json({ message: buildFallbackAnswer(lastUserMessage.content), source: "fallback" });
   }
 }

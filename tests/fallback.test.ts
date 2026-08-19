@@ -16,4 +16,10 @@ describe("listing-guided AI fallback", () => {
     expect(answer).toContain("not financial advice");
     expect(answer).not.toMatch(/\d+%/);
   });
+  it("compares self-living and renting without inventing rental metrics", () => {
+    const answer = buildFallbackAnswer("Is this apartment good for renting or self-living?");
+    expect(answer).toContain("self-living");
+    expect(answer).toContain("renting");
+    expect(answer).toContain("verified rental yield");
+  });
 });

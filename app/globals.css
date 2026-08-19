@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+.message .message-content p { margin: 0 0 8px; }.message .message-content p:last-child { margin-bottom: 0; }.message .message-content ul, .message .message-content ol { margin: 4px 0 0 18px; padding: 0; }.message .message-content li { padding-left: 3px; margin: 4px 0; }.message-heading { display: block; margin-bottom: 7px; }
+
 :root { --ink: #14211e; --ink-2: #1e302b; --stone: #e9e5dd; --paper: #f7f4ee; --gold: #d5b87a; --muted: #75807a; --line: rgba(20,33,30,.16); --font-display: "Iowan Old Style", "Baskerville", "Times New Roman", serif; --font-body: "Avenir Next", "Helvetica Neue", sans-serif; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, Bot, LoaderCircle, MessageCircle, RotateCcw, X } from "lucide-react";
-import { FormEvent, useRef, useState } from "react";
+import { Fragment, FormEvent, type ReactNode, useRef, useState } from "react";
 
 type Message = { role: "user" | "assistant"; content: string; source?: "llm" | "fallback" };
 
@@ -10,6 +10,55 @@ const opening: Message = {
   role: "assistant",
   content: "Good evening. I’m the Aster House concierge. Ask me about the residences, local schooling, amenity spaces or private viewings.",
 };
+
+function renderInlineMarkdown(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={`${part}-${index}`}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith("*") && part.endsWith("*")) {
+      return <em key={`${part}-${index}`}>{part.slice(1, -1)}</em>;
+    }
+    return <Fragment key={`${part}-${index}`}>{part}</Fragment>;
+  });
+}
+
+function MessageContent({ content }: { content: string }) {
+  const blocks: ReactNode[] = [];
+  const listItems: { ordered: boolean; text: string }[] = [];
+
+  function flushList() {
+    if (listItems.length === 0) return;
+    const List = listItems[0].ordered ? "ol" : "ul";
+    blocks.push(
+      <List key={`list-${blocks.length}`}>
+        {listItems.map((item, index) => <li key={`${item.text}-${index}`}>{renderInlineMarkdown(item.text)}</li>)}
+      </List>,
+    );
+    listItems.length = 0;
+  }
+
+  content.split(/\r?\n/).forEach((line, index) => {
+    const listMatch = line.match(/^\s*(?:([-*])|(\d+\.))\s+(.+)$/);
+    if (listMatch) {
+      listItems.push({ ordered: Boolean(listMatch[2]), text: listMatch[3] });
+      return;
+    }
+
+    flushList();
+    if (!line.trim()) return;
+
+    const headingMatch = line.match(/^\s*#{1,3}\s+(.+)$/);
+    if (headingMatch) {
+      blocks.push(<strong className="message-heading" key={`heading-${index}`}>{renderInlineMarkdown(headingMatch[1])}</strong>);
+      return;
+    }
+    blocks.push(<p key={`paragraph-${index}`}>{renderInlineMarkdown(line)}</p>);
+  });
+
+  flushList();
+  return <div className="message-content">{blocks}</div>;
+}
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -68,7 +117,7 @@ export function ChatWidget() {
             <div className="chat-messages" aria-live="polite">
               {messages.map((message, index) => (
                 <div className={`message ${message.role}`} key={`${message.role}-${index}`}>
-                  <p>{message.content}</p>
+                  <MessageContent content={message.content} />
                   {message.source === "fallback" && <small>Listing-guided response</small>}
                 </div>
               ))}

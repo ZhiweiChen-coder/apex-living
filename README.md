@@ -83,11 +83,7 @@ npm run dev
 | `NEXT_PUBLIC_SUPABASE_URL` | 预约必需 | Supabase 项目 URL。 |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | 预约必需 | 仅配合 RLS 使用的 publishable key。 |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | 推荐 | Cloudflare Turnstile 公钥。 |
-| `TURNSTILE_SECRET_KEY` | 推荐 | 仅服务端使用的 Turnstile 密钥。 |
-| `UPSTASH_REDIS_REST_URL` | 生产推荐 | 启用跨 Serverless 实例共享限流。 |
-| `UPSTASH_REDIS_REST_TOKEN` | 生产推荐 | Upstash Redis 服务端 Token。 |
 
-Turnstile 两个变量需要同时配置；Upstash 未配置时会使用本地内存限流，适合本地和 Demo。
 
 ## Supabase 配置
 
@@ -120,7 +116,7 @@ Turnstile 两个变量需要同时配置；Upstash 未配置时会使用本地�
 - 预约接口始终启用 honeypot；配置 Turnstile 后会进行服务端验证。
 - 生产环境启用 HSTS、CSP、禁止 iframe、Referrer Policy 和 Permissions Policy。
 
-完整隐私说明见 [`/privacy`](app/privacy/page.tsx)。正式上线前请替换其中的演示联系邮箱和法律文本。
+完整隐私说明见 [`/privacy`](app/privacy/page.tsx)。
 
 ### Publishable key 的架构限制
 
